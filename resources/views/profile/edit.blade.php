@@ -33,7 +33,7 @@
                         <div class="card-header">Profile Picture</div>
                         <div class="card-body text-center">
                             <!-- Profile picture image -->
-                            <img class="img-account-profile rounded-circle mb-2"
+                            <img class="img-account-profile mb-2"
                                 src="{{ $user->photo ? asset('storage/profile//' . $user->photo) : asset('assets/img/illustrations/profiles/profile-1.png') }}"
                                 alt="" id="image-preview" />
                             <!-- Profile picture help block -->

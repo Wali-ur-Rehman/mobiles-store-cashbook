@@ -7,7 +7,7 @@
         @else
             <div class="container-xl">
                 <x-alert />
-                @livewire('tables.transaction-table', ['suppliers' => $suppliers])
+                @livewire('tables.transaction-table')
             </div>
         @endif
     </div>

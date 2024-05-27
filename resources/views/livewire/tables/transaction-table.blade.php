@@ -1,4 +1,77 @@
 <div class="card">
+    {{-- <div class="container row tex-center pt-3">
+        <div class="col-sm-6 col-lg-1"></div>
+        <div class="col-sm-6 col-lg-2">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                    
+                        <div class="col">
+                            <div class="font-weight-medium">
+                                Rs {{$sums->total_purchase}} Stock
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                    
+                        <div class="col">
+                            <div class="font-weight-medium">
+                                Rs {{$sums->total_sales}} Sales
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                    
+                        <div class="col">
+                            <div class="font-weight-medium">
+                                Rs {{$sums->total_expense}} Expenses
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                    
+                        <div class="col">
+                            <div class="font-weight-medium">
+                                Rs {{$sums->total_credit}} Credit
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                    
+                        <div class="col">
+                            <div class="font-weight-medium">
+                                Rs {{$sums->total_debit}} Debit
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --}}
     <div class="card-header">
         <div>
             <h3 class="card-title">
@@ -6,18 +79,32 @@
             </h3>
         </div>
         <div class="card-actions btn-group">
+            @if(!request()->type || request()->type=="Purchase")
             <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#modal-stock">
                 {{ __('Add Purchase') }}
             </button>
-            <button type="button" class="btn btn-primary  m-1" data-bs-toggle="modal" data-bs-target="#modal-sale">
+            @endif
+            @if(!request()->type || request()->type=="Sales")
+
+            <button type="button" class="btn btn-primary  m-1" data-bs-toggle="modal" data-bs-target="#modal-sales">
                 {{ __('Add Sale') }}
             </button>
+            @endif
+
+            @if(!request()->type || request()->type=="Expense")
+
             <button type="button" class="btn btn-primary  m-1" data-bs-toggle="modal" data-bs-target="#modal-expense">
                 {{ __('Add Expense') }}
             </button>
+            @endif
+
+            @if(!request()->type || request()->type=="Debit" || request()->type=="Credit" )
+
             <button type="button" class="btn btn-primary  m-1" data-bs-toggle="modal" data-bs-target="#modal-debit-credit">
                 {{ __('Add Ddebit/Credit') }}
             </button>
+            @endif
+
         </div>
     </div>
 
@@ -70,7 +157,7 @@
                         {{ __('Name') }}
                     </th>
                     <th scope="col" class="align-middle text-center">
-                        {{ __('Amount') }}
+                        {{ __('Amount(Rs)') }}
                     </th>
                     <th class="align-middle text-center ">
                         {{ __('Type') }}
@@ -93,7 +180,7 @@
                             {{ $transaction->name }}
                         </td>
                         <td class="align-middle text-center">
-                            {{ $transaction->total_amount ?? $transaction->amount }}
+                            {{ $transaction->amount }} 
                         </td>
                         <td class="align-middle text-center">
                             {{ $transaction->type }}
@@ -158,17 +245,32 @@
                                 </div>
                             </div>
                             <input type="text" id="type" name="type" class="form-control" value="Purchase" hidden>
-                            <div class="col-md-6">
+                            
+                            {{-- <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="quantity" class="form-label"> {{ __('Quantity') }} </label>
                                     <input type="text" id="quantity" value="1" min="1" name="quantity" class="form-control" required>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="amount" class="form-label required"> {{ __('Amount') }} </label>
-                                    <input type="text" id="amount" name="amount" class="form-control" required>
+                                    <input type="number" id="amount" name="amount" class="form-control" required>
                                 </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="supplier_id" class="form-label"> Supplier </label>
+                                <select name="supplier_id" id="supplier_id" class="form-select @error('supplier_id') is-invalid @enderror">
+                                    <option value="">Select a Supplier:</option>
+                                    @foreach ($suppliers as $supplier)
+                                    <option value="{{ $supplier->id }}" @if(old('supplier_id') == $supplier->id) selected="selected" @endif>
+                                        {{ $supplier->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('supplier_id')
+                                <div class="invalid-feedback"> {{ $message }} </div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -194,20 +296,23 @@
                                     <input type="text" id="imei_number_2" name="imei_number_2" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-2">
-                                <label for="supplier_id" class="form-label"> Supplier </label>
-                                <select name="supplier_id" id="supplier_id" class="form-select @error('supplier_id') is-invalid @enderror">
-                                    <option value="">Select a Supplier:</option>
-                                    @foreach ($suppliers as $supplier)
-                                    <option value="{{ $supplier->id }}" @if(old('supplier_id') == $supplier->id) selected="selected" @endif>
-                                        {{ $supplier->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                                @error('supplier_id')
-                                <div class="invalid-feedback"> {{ $message }} </div>
-                                @enderror
+                           
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="trasaction_type" class="form-label required">
+                                        {{ __('Transaction Type') }}
+                                    </label>
+
+                                    <select name="trasaction_type" id="trasaction_type"
+                                        class="form-select @error('type') is-invalid @enderror">
+                                        <option value="Cash">Cash</option>
+                                        <option value="Bank Transfer">Bank Transfer</option>
+                                    </select>
+
+                                </div>
                             </div>
+
                             <div class="col-lg-12">
                                 <label for="description" class="form-label"> {{ __('Description') }} </label>
                                 <textarea id="description" name="description" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
@@ -224,6 +329,101 @@
                 </div>
             </form>
             
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modal-sales" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <form method="POST" action="">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Add Sales
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="date" class="form-label required">
+                                        {{ __('Date') }}
+                                    </label>
+                                    <input type="date" id="transaction_date" name="transaction_date"
+                                        class="form-control" value="{{ now()->format('Y-m-d') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label required">
+                                        {{ __('Name') }}
+                                    </label>
+
+                                    <input type="text" id="number" name="name" class="form-control" required>
+                                </div>
+                            </div>
+                            <input type="text" name="type" value="Sales" hidden>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="amount" class="form-label required">
+                                        {{ __('Amount') }}
+                                    </label>
+
+                                    <input type="number" name="amount" id="amount" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label for="product_id" class="form-label"> Products </label>
+                                <select name="product_id" id="product_id" required class="form-select @error('product_id') is-invalid @enderror">
+                                    <option value="">Select a Product:</option>
+                                    @foreach ($products as $product)
+                                    <option value="{{ $product->id }}" @if(old('product_id') == $product->id) selected="selected" @endif>
+                                        {{ $product->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('product_id')
+                                <div class="invalid-feedback"> {{ $message }} </div>
+                                @enderror
+                            </div>
+
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="trasaction_type" class="form-label required">
+                                        {{ __('Transaction Type') }}
+                                    </label>
+
+                                    <select name="trasaction_type" id="trasaction_type"
+                                        class="form-select @error('type') is-invalid @enderror">
+                                        <option value="Cash">Cash</option>
+                                        <option value="Bank Transfer">Bank Transfer</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <label for="description" class="form-label"> {{ __('Description') }} </label>
+                                <textarea id="description" name="description" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                                @error('description')
+                                <div class="invalid-feedback"> {{ $message }} </div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn me-auto" data-bs-dismiss="modal">
+                            {{ __('Cancel') }}
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">
+                            {{ __('Save') }}
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <div class="modal modal-blur fade" id="modal-expense" tabindex="-1" aria-modal="true" role="dialog">
@@ -264,7 +464,7 @@
                                         {{ __('Amount') }}
                                     </label>
 
-                                    <input type="text" name="amount" id="amount" class="form-control" required>
+                                    <input type="number" name="amount" id="amount" class="form-control" required>
                                 </div>
                             </div>
 
@@ -287,19 +487,26 @@
                             </div>
 
 
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="trasaction_type" class="form-label required">
+                                        {{ __('Transaction Type') }}
+                                    </label>
+
+                                    <select name="trasaction_type" id="trasaction_type"
+                                        class="form-select @error('type') is-invalid @enderror">
+                                        <option value="Cash">Cash</option>
+                                        <option value="Bank Transfer">Bank Transfer</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
                             <div class="col-lg-12">
-                                <label for="description" class="form-label required">
-                                    {{ __('Description') }}
-                                </label>
-
-                                <textarea type="text" id="description" name="description"
-                                    class="form-control @error('description') is-invalid @enderror" value="{{ old('description') }}" required>
-                                </textarea>
-
+                                <label for="description" class="form-label"> {{ __('Description') }} </label>
+                                <textarea id="description" name="description" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
                                 @error('description')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
+                                <div class="invalid-feedback"> {{ $message }} </div>
                                 @enderror
                             </div>
                         </div>
@@ -355,7 +562,7 @@
                                         {{ __('Amount') }}
                                     </label>
 
-                                    <input type="text" id="number" name="amount" class="form-control">
+                                    <input type="number" id="number" name="amount" class="form-control">
                                 </div>
                             </div>
 
@@ -388,19 +595,27 @@
                                 <div class="invalid-feedback"> {{ $message }} </div>
                                 @enderror
                             </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="trasaction_type" class="form-label required">
+                                        {{ __('Transaction Type') }}
+                                    </label>
+
+                                    <select name="trasaction_type" id="trasaction_type"
+                                        class="form-select @error('type') is-invalid @enderror">
+                                        <option value="Cash">Cash</option>
+                                        <option value="Bank Transfer">Bank Transfer</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
                             <div class="col-lg-12">
-                                <label for="description" class="form-label required">
-                                    {{ __('Description') }}
-                                </label>
-
-                                <textarea type="text" id="description" name="description"
-                                    class="form-control @error('description') is-invalid @enderror" value="{{ old('description') }}" required>
-                                </textarea>
-
+                                <label for="description" class="form-label"> {{ __('Description') }} </label>
+                                <textarea id="description" name="description" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
                                 @error('description')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
+                                <div class="invalid-feedback"> {{ $message }} </div>
                                 @enderror
                             </div>
                         </div>

@@ -6,7 +6,7 @@
             <div class="row g-2 align-items-center mb-3">
                 <div class="col">
                     <h2 class="page-title">
-                        {{ $product->name }}
+                        {{ $transaction->type }} - {{ $transaction->name }}
                     </h2>
                 </div>
             </div>
@@ -23,12 +23,12 @@
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title">
-                                    {{ __('Product Image') }}
+                                    {{ __('Transaction Details') }}
                                 </h3>
 
-                                <img style="width: 90px;" id="image-preview"
-                                    src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
-                                    alt="" class="img-account-profile mb-2">
+                                {{-- <img style="width: 90px;" id="image-preview"
+                                    src="{{ $transaction->product_image ? asset('storage/' . $transaction->product_image) : asset('assets/img/products/default.webp') }}"
+                                    alt="" class="img-account-profile mb-2"> --}}
                             </div>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                                         </label>
 
                                         <div class="form-control">
-                                            {{ $product->code }}
+                                            {{-- {{ $product->code }} --}}
                                         </div>
                                     </div>
 
@@ -56,7 +56,7 @@
                                         </label>
 
                                         <div class="mt-1">
-                                            {!! $barcode !!}
+                                            {{-- {!! $barcode !!} --}}
                                         </div>
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">
-                                    {{ __('Product Details') }}
+                                    {{ __('Transaction Details') }}
                                 </h3>
                             </div>
                             <div class="table-responsive">
@@ -77,21 +77,39 @@
                                     <tbody>
                                         <tr>
                                             <td>Name</td>
-                                            <td>{{ $product->name }}</td>
+                                            <td>{{ $transaction->name }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Seller CNIN</td>
-                                            <td>{{ $product->seller_cnic }}</td>
+                                            <td>Transaction Date</td>
+                                            <td>{{ $transaction->transaction_date }}</td>
+                                        </tr>
+                                        @if($transaction->type=='Purchase')
+                                            <tr>
+                                                <td>Seller Name</td>
+                                                <td>{{ $transaction->seller_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Seller CNIN</td>
+                                                <td>{{ $transaction->seller_cnic }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>IMEI Number I</td>
+                                                <td>{{ $transaction->imei_number_1 }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>IMEI Number II</td>
+                                                <td>{{ $transaction->imei_number_2 }}</td>
+                                            </tr>
+                                        @endif
+                                        <tr>
+                                            <td>Amount</td>
+                                            <td>{{ $transaction->amount }}</td>
                                         </tr>
                                         <tr>
-                                            <td>IMEI Number I</td>
-                                            <td>{{ $product->imei_number1 }}</td>
+                                            <td>Description</td>
+                                            <td>{{ $transaction->description }}</td>
                                         </tr>
-                                        <tr>
-                                            <td>IMEI Number II</td>
-                                            <td>{{ $product->imei_number2 }}</td>
-                                        </tr>
-                                        <tr>
+                                        {{-- <tr>
                                             <td>Slug</td>
                                             <td>{{ $product->slug }}</td>
                                         </tr>
@@ -102,8 +120,8 @@
                                         <tr>
                                             <td>Barcode</td>
                                             <td>{!! $barcode !!}</td>
-                                        </tr>
-                                        <tr>
+                                        </tr> --}}
+                                        {{-- <tr>
                                             <td>Category</td>
                                             <td>
                                                 <a href="{{ route('categories.show', $product->category) }}"
@@ -111,12 +129,12 @@
                                                     {{ $product->category->name }}
                                                 </a>
                                             </td>
-                                        </tr>
+                                        </tr> --}}
 
-                                        <tr>
+                                        {{-- <tr>
                                             <td>Quantity</td>
                                             <td>{{ $product->quantity }}</td>
-                                        </tr>
+                                        </tr> --}}
                                         {{-- <tr>
                                             <td>Quantity Alert</td>
                                             <td>
@@ -126,7 +144,7 @@
                                             </td>
                                         </tr> --}}
 
-                                        <tr>
+                                        {{-- <tr>
                                             <td>Buying Price</td>
                                             <td>{{ $product->buying_price }}</td>
                                         </tr>
@@ -137,7 +155,7 @@
                                         <tr>
                                             <td>Supplier</td>
                                             <td>{{ $product->supplier ? $product->supplier->name : '-' }}</td>
-                                        </tr>
+                                        </tr> --}}
                                         {{-- <tr>
                                             <td>Tax</td>
                                             <td>
@@ -150,10 +168,10 @@
                                             <td>Tax Type</td>
                                             <td>{{ $product->tax_type->label() }}</td>
                                         </tr> --}}
-                                        <tr>
+                                        {{-- <tr>
                                             <td>{{ __('Notes') }}</td>
                                             <td>{{ $product->notes }}</td>
-                                        </tr>
+                                        </tr> --}}
                                     </tbody>
                                 </table>
                             </div>
@@ -169,7 +187,7 @@
                                     </svg>
                                     {{ __('Back') }}
                                 </a>
-                                <a class="btn btn-warning" href="{{ route('products.edit', $product->uuid) }}">
+                                {{-- <a class="btn btn-warning" href="{{ route('products.edit', $product->uuid) }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil"
                                         width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
                                         stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -178,7 +196,7 @@
                                         <path d="M13.5 6.5l4 4" />
                                     </svg>
                                     {{ __('Edit') }}
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     </div>

@@ -49,11 +49,16 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-                    {{-- <a href="{{ url('/') }}">
-                        <img src="{{ asset('static/logo.svg') }}" width="110" height="32" alt="Tabler"
+                    @if(auth()->user()?->photo)
+                    <a href="{{ url('/') }}">
+                        <img src="{{ asset('storage/profile/'.auth()->user()?->photo) }}" width="110" height="32" alt="Tabler"
                             class="navbar-brand-image">
-                    </a> --}}
-                    {{ auth()->user()?->store_name  ?? "Mobile Store" }}
+                    </a>
+                    @else
+                    {{ auth()->user()?->name  ?? "Mobile Store" }}
+
+                    @endif
+                    
                 </h1>
                 <div class="navbar-nav flex-row order-md-last">
                     <div class="d-none d-md-flex">
@@ -273,24 +278,138 @@
                             </li> --}}
 
 
-                            <li class="nav-item dropdown {{ request()->is('transactions*') ? 'active' : null }}">
+                            <li class="nav-item dropdown {{ request()->is('transactions*') && !request()->query('type') ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ route('transactions.index') }}">
-                                    <span
-                                        class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coins" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                             <ellipse cx="12" cy="10" rx="7" ry="3" />
                                             <path d="M5 10v4a7 3 0 0 0 14 0v-4" />
                                             <path d="M5 14v4a7 3 0 0 0 14 0v-4" />
-                                          </svg>                                          
+                                        </svg>                                          
                                     </span>
                                     <span class="nav-link-title">
                                         {{ __('Cashbook') }}
                                     </span>
                                 </a>
                             </li>
-
-                            <li class="nav-item dropdown {{ request()->is('products*') ? 'active' : null }}">
+                            <li class="nav-item dropdown {{ request()->is('transactions*') && request()->query('type') == 'Purchase' ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('transactions.index', ['type' => 'Purchase']) }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="icon icon-tabler icon-tabler-packages" width="24"
+                                            height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M7 16.5l-5 -3l5 -3l5 3v5.5l-5 3z" />
+                                            <path d="M2 13.5v5.5l5 3" />
+                                            <path d="M7 16.545l5 -3.03" />
+                                            <path d="M17 16.5l-5 -3l5 -3l5 3v5.5l-5 3z" />
+                                            <path d="M12 19l5 3" />
+                                            <path d="M17 16.5l5 -3" />
+                                            <path d="M12 13.5v-5.5l-5 -3l5 -3l5 3v5.5" />
+                                            <path d="M7 5.03v5.455" />
+                                            <path d="M12 8l5 -3" />
+                                        </svg>                                         
+                                    </span>
+                                    <span class="nav-link-title">
+                                        {{ __('Stock') }}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown {{ request()->is('transactions*') && request()->query('type') == 'Sales' ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('transactions.index', ['type' => 'Sales']) }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="icon icon-tabler icon-tabler-package-export" width="24"
+                                                height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                stroke="currentColor" fill="none" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" />
+                                                <path d="M12 12l8 -4.5" />
+                                                <path d="M12 12v9" />
+                                                <path d="M12 12l-8 -4.5" />
+                                                <path d="M15 18h7" />
+                                                <path d="M19 15l3 3l-3 3" />
+                                            </svg>
+                                        </span>                                         
+                                    </span>
+                                    <span class="nav-link-title">
+                                        {{ __('Sales') }}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown {{ request()->is('transactions*') && request()->query('type') == 'Credit' ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('transactions.index', ['type' => 'Credit']) }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="icon icon-tabler icon-tabler-package-export" width="24"
+                                            height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" />
+                                            <path d="M12 12l8 -4.5" />
+                                            <path d="M12 12v9" />
+                                            <path d="M12 12l-8 -4.5" />
+                                            <path d="M15 18h7" />
+                                            <path d="M19 15l3 3l-3 3" />
+                                        </svg>                                      
+                                    </span>
+                                    <span class="nav-link-title">
+                                        {{ __('Credit') }}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown {{ request()->is('transactions*') && request()->query('type') == 'Expense' ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('transactions.index', ['type' => 'Expense']) }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="icon icon-tabler icon-tabler-package-import" width="24"
+                                            height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" />
+                                            <path d="M12 12l8 -4.5" />
+                                            <path d="M12 12v9" />
+                                            <path d="M12 12l-8 -4.5" />
+                                            <path d="M22 18h-7" />
+                                            <path d="M18 15l-3 3l3 3" />
+                                        </svg>                                        
+                                    </span>
+                                    <span class="nav-link-title">
+                                        {{ __('Expenses') }}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown {{ request()->is('transactions*') && request()->query('type') == 'Debit' ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('transactions.index', ['type' => 'Debit']) }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="icon icon-tabler icon-tabler-package-import" width="24"
+                                            height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" />
+                                            <path d="M12 12l8 -4.5" />
+                                            <path d="M12 12v9" />
+                                            <path d="M12 12l-8 -4.5" />
+                                            <path d="M22 18h-7" />
+                                            <path d="M18 15l-3 3l3 3" />
+                                        </svg>                                           
+                                    </span>
+                                    <span class="nav-link-title">
+                                        {{ __('Debit') }}
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            {{-- <li class="nav-item dropdown {{ request()->is('products*') ? 'active' : null }}">
                                 <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
                                     data-bs-auto-close="outside" role="button" aria-expanded="false">
                                     <span
@@ -328,11 +447,39 @@
                                         </div>
                                     </div>
                                 </div>
+                            </li> --}}
+
+                            <li class="nav-item dropdown {{ request()->is('suppliers*') ? 'active' : null }}">
+                                <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside" role="button" aria-expanded="false">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <circle cx="12" cy="7" r="4" />
+                                            <path d="M5 20v-1a3 3 0 0 1 3 -3h8a3 3 0 0 1 3 3v1" />
+                                          </svg>
+                                          
+                                    </span>
+                                    <span class="nav-link-title">
+                                        {{ __('Suppliers') }}
+                                    </span>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <div class="dropdown-menu-columns">
+                                        <div class="dropdown-menu-column">
+                                            <a class="dropdown-item" href="{{ route('suppliers.create') }}">
+                                                {{ __('Add Suppliers') }}
+                                            </a>
+                                            <a class="dropdown-item" href="{{ route('suppliers.index') }}">
+                                                {{ __('List Suppliers') }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </li>
 
 
-
-
+{{-- 
                             <li class="nav-item dropdown {{ request()->is('orders*') ? 'active' : null }}">
                                 <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
                                     data-bs-auto-close="outside" role="button" aria-expanded="false">
@@ -364,15 +511,6 @@
                                             <a class="dropdown-item" href="{{ route('orders.index') }}">
                                                 {{ __('List Sales') }}
                                             </a>
-                                            {{-- <a class="dropdown-item" href="{{ route('orders.complete') }}">
-                                                {{ __('Completed') }}
-                                            </a>
-                                            <a class="dropdown-item" href="{{ route('orders.pending') }}">
-                                                {{ __('Pending') }}
-                                            </a>
-                                            <a class="dropdown-item" href="{{ route('due.index') }}">
-                                                {{ __('Due') }}
-                                            </a> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -409,35 +547,7 @@
                                 </div>
                             </li>
 
-                            <li class="nav-item dropdown {{ request()->is('suppliers*') ? 'active' : null }}">
-                                <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
-                                    data-bs-auto-close="outside" role="button" aria-expanded="false">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <circle cx="12" cy="7" r="4" />
-                                            <path d="M5 20v-1a3 3 0 0 1 3 -3h8a3 3 0 0 1 3 3v1" />
-                                          </svg>
-                                          
-                                    </span>
-                                    <span class="nav-link-title">
-                                        {{ __('Suppliers') }}
-                                    </span>
-                                </a>
-                                <div class="dropdown-menu">
-                                    <div class="dropdown-menu-columns">
-                                        <div class="dropdown-menu-column">
-                                            <a class="dropdown-item" href="{{ route('suppliers.create') }}">
-                                                {{ __('Add Suppliers') }}
-                                            </a>
-                                            <a class="dropdown-item" href="{{ route('suppliers.index') }}">
-                                                {{ __('List Suppliers') }}
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
+                           
 
                             
                             <li class="nav-item dropdown {{ request()->is('categories*') ? 'active' : null }}">
@@ -468,7 +578,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </li>
+                            </li> --}}
                             {{-- <li class="nav-item dropdown {{ request()->is('purchases*') ? 'active' : null }}">
                                 <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
                                     data-bs-auto-close="outside" role="button" aria-expanded="false">
